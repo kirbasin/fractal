@@ -8,6 +8,9 @@ public class Fractal : MonoBehaviour
     public int maxDepth;
     public float childScale;
     public float spawnProbability;
+    public float maxRotationSpeed;  
+    public float maxTwist;  
+    private float rotationSpeed;
     private int depth = 0;
     private static Vector3[] childDirections = {
         Vector3.up,
@@ -49,6 +52,8 @@ public class Fractal : MonoBehaviour
         depth = parent.depth + 1;
         childScale = parent.childScale;
         spawnProbability = parent.spawnProbability;
+        maxRotationSpeed = parent.maxRotationSpeed;
+        maxTwist = parent.maxTwist;
         transform.parent = parent.transform;
         transform.localScale = Vector3.one * childScale;
         transform.localPosition = childDirections[childIndex] * (0.5f + 0.5f * childScale);
@@ -69,6 +74,8 @@ public class Fractal : MonoBehaviour
     
     private void Start()
     {
+        rotationSpeed = Random.Range(-maxRotationSpeed, maxRotationSpeed);
+        transform.Rotate(Random.Range(-maxTwist, maxTwist), 0f, 0f);
         if (materials == null)
         {
             InitializeMaterials();
@@ -81,4 +88,8 @@ public class Fractal : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        transform.Rotate(0f, rotationSpeed * Time.deltaTime, 0f);
+    }
 }
