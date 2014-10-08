@@ -7,6 +7,7 @@ public class Fractal : MonoBehaviour
     public Material material;
     public int maxDepth;
     public float childScale;
+    public float spawnProbability;
     private int depth = 0;
     private static Vector3[] childDirections = {
         Vector3.up,
@@ -47,6 +48,7 @@ public class Fractal : MonoBehaviour
         maxDepth = parent.maxDepth;
         depth = parent.depth + 1;
         childScale = parent.childScale;
+        spawnProbability = parent.spawnProbability;
         transform.parent = parent.transform;
         transform.localScale = Vector3.one * childScale;
         transform.localPosition = childDirections[childIndex] * (0.5f + 0.5f * childScale);
@@ -57,8 +59,11 @@ public class Fractal : MonoBehaviour
     {
         for (int i = 0; i < childDirections.Length; i++)
         {
-            yield return new WaitForSeconds(Random.Range(0.1f, 0.5f));
-            new GameObject("Fractal Child").AddComponent<Fractal>().Initialize(this, i);
+            if (Random.value < spawnProbability)
+            {
+                yield return new WaitForSeconds(Random.Range(0.1f, 0.5f));
+                new GameObject("Fractal Child").AddComponent<Fractal>().Initialize(this, i);
+            }
         }
     }
     
